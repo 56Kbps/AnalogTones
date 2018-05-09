@@ -118,6 +118,9 @@ void inline play(uint16_t note) {
   }
 }
 
+uint16_t * notesPointer = (uint16_t*) notes;
+uint16_t * tempoPointer = (uint16_t*) tempo+1;
+
 void inline nonBlockingPlayer(uint16_t usec) {
   if(usec-midiTimer>=bpm) {
     midiPosition++;
@@ -125,15 +128,13 @@ void inline nonBlockingPlayer(uint16_t usec) {
   }
 
   if(midiPosition >= track.nextEvent) {
-      play(pgm_read_word(notes + track.pos));
-      track.pos++;
-      track.nextEvent = pgm_read_word(tempo + track.pos);
-      midiPosition = 0;
+    
+    play(pgm_read_word(notesPointer++));
+    track.nextEvent = pgm_read_word(tempoPointer++);
+    midiPosition = 0;
   }
- 
 
 }
-
 
 
 void setup() {
